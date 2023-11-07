@@ -19,10 +19,10 @@ admin.site.register(Departamento, DepartamentoAdmin)
 class EmpleadoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     
     # Campos buscables en admin
-    search_fields = ('nombre',)
+    search_fields = ('nombre', 'cedula')
     
     # Campos visibles en admin
-    list_display = ('nombre', 'departamento', 'cargo')
+    list_display = ('nombre', 'departamento', 'cargo', 'cedula')
     
     # Campos filtrables en admin
     list_filter = ('departamento', 'cargo')
