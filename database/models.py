@@ -3,7 +3,8 @@ from django.db import models
 # Modelo de departamentos, rige el modelo de empleados
 
 class Departamento(models.Model):
-
+    
+    id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=50, default='No asignado')
     def __str__(self):
         return self.nombre
@@ -22,6 +23,7 @@ CARGOS = [('Gerente', 'Gerente'),
 
 class Empleado(models.Model):   
     
+    id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=50, default='No asignado')
     departamento = models.ForeignKey(Departamento, on_delete=models.CASCADE)
     cargo = models.CharField(choices=CARGOS, max_length=50, default='Sin cargo')
@@ -33,9 +35,10 @@ class Empleado(models.Model):
 # Computadores y Laptops
 
 class Equipo(models.Model):   
+         
+    id = models.AutoField(primary_key=True)
     
     # Datos corporativos
-    
     usuario = models.ForeignKey(Empleado, on_delete=models.CASCADE)
     bien_nacional = models.CharField(max_length=6, default="000000")
     # Datos de fabrica
@@ -59,6 +62,8 @@ class Equipo(models.Model):
 
 class Telefono(models.Model):   
     
+    id = models.AutoField(primary_key=True)
+
     # Datos corporativos
     
     usuario = models.ForeignKey(Empleado, on_delete=models.CASCADE)
@@ -79,6 +84,8 @@ class Telefono(models.Model):
         return self.usuario.nombre
     
 class Impresora(models.Model):
+    
+    id = models.AutoField(primary_key=True)
 
     # Datos corporativos
     
@@ -99,6 +106,8 @@ class Impresora(models.Model):
     
     
 class Switch(models.Model):
+    
+    id = models.AutoField(primary_key=True)
 
     # Datos corporativos
     
@@ -119,6 +128,8 @@ class Switch(models.Model):
 
 class Router(models.Model):
     
+    id = models.AutoField(primary_key=True)
+
     # Datos corporativos
     
     bien_nacional = models.CharField(max_length=6, default="000000")
@@ -136,7 +147,12 @@ class Router(models.Model):
     def __str__(self):
         return self.ipv4
     
+    
+# Arreglo de modelos
+
 class Desincorporacion(models.Model):
+    
+    id = models.AutoField(primary_key=True)
     
     # Datos de usuario
     
@@ -144,17 +160,32 @@ class Desincorporacion(models.Model):
     
     # Datos corporativos
 
-    departamento = models.ForeignKey(Departamento, on_delete=models.CASCADE, default=0)
+    usuario = models.ForeignKey(Empleado, on_delete=models.CASCADE, null=True, blank=True)
     descripcion = models.CharField(max_length=100, default='No asignado')
     
     # Datos de fabrica
-
-    equipo = models.CharField(max_length=50, default='No asignado')
+    
     marca = models.CharField(max_length=50, default='No asignado')
     modelo = models.CharField(max_length=50, default='No asignado')
     
     def __str__(self):
-        return self.departamento.nombre + ' ' + self.modelo
-
-
+        return self.bien_nacional
+    
+class Solvencia(models.Model):
+    
+    id = models.AutoField(primary_key=True)
+    
+    # Datos de usuario
+    bien_nacional = models.CharField(max_length=6, default="000000")
+    
+    # Datos corporativos
+    usuario = models.ForeignKey(Empleado, on_delete=models.CASCADE, null=True, blank=True)
+    descripcion = models.CharField(max_length=100, default='No asignado')
+    
+    # Datos de fabrica
+    marca = models.CharField(max_length=50, default='No asignado')
+    modelo = models.CharField(max_length=50, default='No asignado')
+    
+    def __str__(self):
+        return self.bien_nacional
     
