@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.http import HttpResponse
+from reportlab.pdfgen import canvas
 from . models import *
 from import_export.admin import ImportExportModelAdmin
 
@@ -80,9 +82,37 @@ def equipo_en_solvencia(modeladmin, request, queryset):
 
 equipo_en_solvencia.short_description = "Marcar como activo en solvencia"
 
+
+def generar_pdf(modeladmin, request, queryset):
+   response = HttpResponse(content_type='application/pdf')
+   response['Content-Disposition'] = 'attachment; filename="reporte.pdf"'
+
+   p = canvas.Canvas(response)
+   
+#  Obtiene el modelo 
+   model = modeladmin.model
+   model_name = model._meta.verbose_name_plural.capitalize()
+#  Obtiene los campos
+   fields = [field.name for field in model._meta.fields]
+
+   for item in queryset:
+        # Draw each field dynamically
+        y_position = 750
+        for field_name in fields:
+            field_value = getattr(item, field_name)
+            p.drawString(100, y_position, f"{field_name.capitalize()}: {field_value}")
+            y_position -= 20
+
+        p.showPage()
+
+   p.save()
+   return response
+
+generar_pdf.short_description = "Generar PDF"
+
 class EquipoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     
-    actions = [equipo_no_operativo, equipo_en_solvencia]
+    actions = [equipo_no_operativo, equipo_en_solvencia, generar_pdf]
 
     # Campos buscables en admin
     search_fields = ('usuario__nombre',)
@@ -97,7 +127,7 @@ admin.site.register(Equipo, EquipoAdmin)
 
 class ImpresoraAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     
-    actions = [equipo_no_operativo, equipo_en_solvencia]
+    actions = [equipo_no_operativo, equipo_en_solvencia, generar_pdf]
 
     # Campos buscables en admin
     search_fields = ('marca', 'modelo')
@@ -112,7 +142,7 @@ admin.site.register(Impresora, ImpresoraAdmin)
 
 class TelefonoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     
-    actions = [equipo_no_operativo, equipo_en_solvencia]
+    actions = [equipo_no_operativo, equipo_en_solvencia, generar_pdf]
 
     # Campos buscables en admin
     search_fields = ('usuario__nombre', 'numero')
@@ -127,7 +157,7 @@ admin.site.register(Telefono, TelefonoAdmin)
 
 class SwitchAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     
-    actions = [equipo_no_operativo, equipo_en_solvencia]
+    actions = [equipo_no_operativo, equipo_en_solvencia, generar_pdf]
 
     # Campos buscables en admin
     search_fields = ('marca', 'modelo')
@@ -142,7 +172,7 @@ admin.site.register(Switch, SwitchAdmin)
 
 class RouterAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     
-    actions = [equipo_no_operativo, equipo_en_solvencia]
+    actions = [equipo_no_operativo, equipo_en_solvencia, generar_pdf]
     
     # Campos buscables en admin
     search_fields = ('marca', 'modelo')
@@ -157,6 +187,8 @@ admin.site.register(Router, RouterAdmin)
 
 class DesincorporacionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
+    actions = [generar_pdf]
+
     # Campos visibles en admin
     list_display = ('bien_nacional', 'usuario', 'marca', 'modelo')
     
@@ -168,6 +200,8 @@ class DesincorporacionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 admin.site.register(Desincorporacion, DesincorporacionAdmin)
 
 class SolvenciaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+
+    actions = [generar_pdf]
 
     # Campos visibles en admin
     list_display = ('bien_nacional', 'usuario', 'marca', 'modelo')
