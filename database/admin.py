@@ -57,29 +57,26 @@ def equipo_no_operativo(modeladmin, request, queryset):
 equipo_no_operativo.short_description = "Marcar como activo no operativo"
 
 def equipo_en_solvencia(modeladmin, request, queryset):
-    
-    queryset.update(usuario=None)
-    
-    # for obj in queryset:
         
-    #     if (hasattr(obj, 'usuario')):
+    for obj in queryset:
+        
+        if (hasattr(obj, 'usuario')):
             
-    #         source_obj = Solvencia.objects.create(
-    #         bien_nacional=obj.bien_nacional,
-    #         marca=obj.marca,
-    #         modelo=obj.modelo
-    #         )
-    #     else:   
+            source_obj = Solvencia.objects.create(
+            bien_nacional=obj.bien_nacional,
+            marca=obj.marca,
+            modelo=obj.modelo
+            )
+        else:   
             
-    #         source_obj = Solvencia.objects.create(
-    #         bien_nacional=obj.bien_nacional,
-    #         usuario= None,
-    #         marca=obj.marca,
-    #         modelo=obj.modelo
-    #         )
+            source_obj = Solvencia.objects.create(
+            bien_nacional=obj.bien_nacional,
+            usuario= None,
+            marca=obj.marca,
+            modelo=obj.modelo
+            )
             
-        # Delete the TargetModel object
-        # obj.delete()
+        obj.delete()
 
 equipo_en_solvencia.short_description = "Marcar como activo en solvencia"
 
@@ -128,7 +125,7 @@ admin.site.register(Equipo, EquipoAdmin)
 
 class ImpresoraAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     
-    actions = [equipo_no_operativo, generar_pdf]
+    actions = [equipo_no_operativo, equipo_en_solvencia, generar_pdf]
 
     # Campos buscables en admin
     search_fields = ('marca', 'modelo', 'bien_nacional')
@@ -158,7 +155,7 @@ admin.site.register(Telefono, TelefonoAdmin)
 
 class SwitchAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     
-    actions = [equipo_no_operativo, generar_pdf]
+    actions = [equipo_no_operativo, equipo_en_solvencia, generar_pdf]
 
     # Campos buscables en admin
     search_fields = ('marca', 'modelo', 'bien_nacional')
@@ -173,7 +170,7 @@ admin.site.register(Switch, SwitchAdmin)
 
 class RouterAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     
-    actions = [equipo_no_operativo, generar_pdf]
+    actions = [equipo_no_operativo, equipo_en_solvencia, generar_pdf]
     
     # Campos buscables en admin
     search_fields = ('marca', 'modelo', 'bien_nacional')
