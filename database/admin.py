@@ -191,9 +191,8 @@ class DesincorporacionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('bien_nacional', 'usuario', 'marca', 'modelo')
     
     # Campos buscables en admin
-    search_fields = ('bien_nacional')
-
-    search_fields = ('modelo',)    
+    
+    search_fields = ('bien_nacional',)
     # Campos filtrables en admin
     
 admin.site.register(Desincorporacion, DesincorporacionAdmin)
@@ -210,7 +209,6 @@ class SolvenciaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     search_fields = ('bien_nacional', 'modelo')
     # Campos filtrables en admin
     
-    # Campos filtrables en admin
     
 admin.site.register(Solvencia, SolvenciaAdmin)
 
