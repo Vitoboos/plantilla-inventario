@@ -57,28 +57,29 @@ def equipo_no_operativo(modeladmin, request, queryset):
 equipo_no_operativo.short_description = "Marcar como activo no operativo"
 
 def equipo_en_solvencia(modeladmin, request, queryset):
-    for obj in queryset:
-        # Create a new SourceModel object with the same dat
+    
+    queryset.update(usuario=None)
+    
+    # for obj in queryset:
         
-        if (hasattr(obj, 'usuario')):
+    #     if (hasattr(obj, 'usuario')):
             
-            source_obj = Solvencia.objects.create(
-            bien_nacional=obj.bien_nacional,
-            usuario=obj.usuario,
-            marca=obj.marca,
-            modelo=obj.modelo
-            )
-        else:   
+    #         source_obj = Solvencia.objects.create(
+    #         bien_nacional=obj.bien_nacional,
+    #         marca=obj.marca,
+    #         modelo=obj.modelo
+    #         )
+    #     else:   
             
-            source_obj = Solvencia.objects.create(
-            bien_nacional=obj.bien_nacional,
-            usuario= None,
-            marca=obj.marca,
-            modelo=obj.modelo
-            )
+    #         source_obj = Solvencia.objects.create(
+    #         bien_nacional=obj.bien_nacional,
+    #         usuario= None,
+    #         marca=obj.marca,
+    #         modelo=obj.modelo
+    #         )
             
         # Delete the TargetModel object
-        obj.delete()
+        # obj.delete()
 
 equipo_en_solvencia.short_description = "Marcar como activo en solvencia"
 
@@ -115,25 +116,25 @@ class EquipoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     actions = [equipo_no_operativo, equipo_en_solvencia, generar_pdf]
 
     # Campos buscables en admin
-    search_fields = ('usuario__nombre',)
+    search_fields = ('usuario__nombre', 'bien_nacional')
     
     # Campos visibles en admin
-    list_display = ('usuario', 'procesador', 'ram', 'almacenamiento', 'tipo_disco', 'ipv4', 'mac')
+    list_display = ('usuario', 'bien_nacional', 'procesador', 'ram', 'almacenamiento', 'tipo_disco', 'ipv4', 'mac')
     
     # Campos filtrables en admin
-    list_filter = ('usuario__departamento', 'usuario__cargo')
+    list_filter = ('usuario__departamento', 'usuario__cargo', 'usuario__nombre')
 
 admin.site.register(Equipo, EquipoAdmin)
 
 class ImpresoraAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     
-    actions = [equipo_no_operativo, equipo_en_solvencia, generar_pdf]
+    actions = [equipo_no_operativo, generar_pdf]
 
     # Campos buscables en admin
-    search_fields = ('marca', 'modelo')
+    search_fields = ('marca', 'modelo', 'bien_nacional')
     
     # Campos visibles en admin
-    list_display = ('marca', 'modelo', 'ipv4', 'mac')
+    list_display = ('marca', 'bien_nacional', 'modelo', 'ipv4', 'mac')
     
     # Campos filtrables en admin
     list_filter = ('marca',)
@@ -145,10 +146,10 @@ class TelefonoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     actions = [equipo_no_operativo, equipo_en_solvencia, generar_pdf]
 
     # Campos buscables en admin
-    search_fields = ('usuario__nombre', 'numero')
+    search_fields = ('usuario__nombre', 'numero', 'bien_nacional')
     
     # Campos visibles en admin
-    list_display = ('usuario', 'numero', 'marca', 'modelo', 'ipv4', 'mac')
+    list_display = ('usuario', 'bien_nacional', 'numero', 'marca', 'modelo', 'ipv4', 'mac')
     
     # Campos filtrables en admin
     list_filter = ('usuario__departamento', 'usuario__cargo',)
@@ -157,13 +158,13 @@ admin.site.register(Telefono, TelefonoAdmin)
 
 class SwitchAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     
-    actions = [equipo_no_operativo, equipo_en_solvencia, generar_pdf]
+    actions = [equipo_no_operativo, generar_pdf]
 
     # Campos buscables en admin
-    search_fields = ('marca', 'modelo')
+    search_fields = ('marca', 'modelo', 'bien_nacional')
     
     # Campos visibles en admin
-    list_display = ('marca', 'modelo', 'puertos', 'ipv4', 'mac')
+    list_display = ('bien_nacional', 'marca', 'modelo', 'puertos', 'ipv4', 'mac')
     
     # Campos filtrables en admin
     list_filter = ('marca',)
@@ -172,13 +173,13 @@ admin.site.register(Switch, SwitchAdmin)
 
 class RouterAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     
-    actions = [equipo_no_operativo, equipo_en_solvencia, generar_pdf]
+    actions = [equipo_no_operativo, generar_pdf]
     
     # Campos buscables en admin
-    search_fields = ('marca', 'modelo')
+    search_fields = ('marca', 'modelo', 'bien_nacional')
     
     # Campos visibles en admin
-    list_display = ('marca', 'modelo', 'puertos', 'ipv4', 'mac')
+    list_display = ('bien_nacional', 'marca', 'modelo', 'puertos', 'ipv4', 'mac')
     
     # Campos filtrables en admin
     list_filter = ('marca',)
@@ -193,7 +194,8 @@ class DesincorporacionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('bien_nacional', 'usuario', 'marca', 'modelo')
     
     # Campos buscables en admin
-    
+    search_fields = ('bien_nacional')
+
     search_fields = ('modelo',)    
     # Campos filtrables en admin
     
@@ -208,7 +210,7 @@ class SolvenciaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     
     # Campos buscables en admin
     
-    search_fields = ('modelo',)    
+    search_fields = ('bien_nacional', 'modelo')
     # Campos filtrables en admin
     
     # Campos filtrables en admin

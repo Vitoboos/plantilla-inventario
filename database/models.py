@@ -39,7 +39,7 @@ class Equipo(models.Model):
     id = models.AutoField(primary_key=True)
     
     # Datos corporativos
-    usuario = models.ForeignKey(Empleado, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Empleado, on_delete=models.CASCADE, null=True, blank=True)
     bien_nacional = models.CharField(max_length=6, default="000000")
     # Datos de fabrica
 
@@ -57,7 +57,12 @@ class Equipo(models.Model):
     mac = models.CharField(max_length=50, default='No asignado')
 
     def __str__(self):
-        return self.usuario.nombre
+        
+        if hasattr(self, 'nombre'):
+            return self.usuario.nombre
+        
+        else:
+            return self.bien_nacional
 # Telefonos celulares    
 
 class Telefono(models.Model):   
@@ -66,7 +71,7 @@ class Telefono(models.Model):
 
     # Datos corporativos
     
-    usuario = models.ForeignKey(Empleado, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Empleado, on_delete=models.CASCADE, null=True, blank=True)
     numero = models.CharField(max_length=50, default='No asignado')
     bien_nacional = models.CharField(max_length=6, default="000000")
 
@@ -81,7 +86,12 @@ class Telefono(models.Model):
     mac = models.CharField(max_length=50, default='No asignado')
 
     def __str__(self):
-        return self.usuario.nombre
+        
+        if hasattr(self, 'nombre'):
+            return self.usuario.nombre
+        
+        else:
+            return self.bien_nacional
     
 class Impresora(models.Model):
     
