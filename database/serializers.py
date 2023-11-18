@@ -60,6 +60,11 @@ class RouterSerializer(serializers.ModelSerializer):
         model = Router
         fields = '__all__'
         
+class PerifericoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Periferico
+        fields = '__all__'
+        
 class DesincorporacionSerializer(serializers.ModelSerializer):
 
     class Meta:

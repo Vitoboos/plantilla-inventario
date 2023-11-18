@@ -163,6 +163,20 @@ class Router(models.Model):
     def __str__(self):
         return self.ipv4
     
+class Periferico(models.Model):
+    
+    id = models.AutoField(primary_key=True)
+    bien_nacional = models.CharField(max_length=6, default="000000")
+    usuario = models.ForeignKey(Empleado, on_delete=models.CASCADE, null=True, blank=True)
+    
+    # Datos de fabrica
+    
+    equipo = models.CharField(choices=[('Monitor', 'Monitor'), ('Mouse', 'Mouse'), ('Teclado', 'Teclado')], max_length=50, default='No asignado')
+    marca = models.CharField(max_length=50, default='No asignado')
+    modelo = models.CharField(max_length=50, default='No asignado')
+    
+    def __str__(self):
+        return self.bien_nacional + self.usuario.nombre
     
 # Arreglo de modelos
 

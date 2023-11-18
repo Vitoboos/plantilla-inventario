@@ -1,7 +1,9 @@
 from django.shortcuts import render
+from django.contrib import admin
 from rest_framework import viewsets
 from .serializers import *
 from .models import *
+from django.apps import apps
 
 class DepartamentoViewSet(viewsets.ModelViewSet):
     queryset = Departamento.objects.all().order_by('id')
@@ -58,6 +60,14 @@ class RouterViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
         return queryset
+    
+class PerifericoViewSet(viewsets.ModelViewSet):
+    queryset = Periferico.objects.all()
+    serializer_class = PerifericoSerializer
+    
+    def get_queryset(self):
+        queryset = self.queryset
+        return queryset
 
 class DesincorporacionViewSet(viewsets.ModelViewSet):
     queryset = NoFuncional.objects.all()
@@ -73,3 +83,4 @@ class DesincorporacionViewSet(viewsets.ModelViewSet):
 class SolvenciaViewset(viewsets.ModelViewSet):
     queryset = Solvencia.objects.all()
     serializer_class = SolvenciaSerializer
+    

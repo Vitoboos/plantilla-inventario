@@ -1,11 +1,45 @@
 from django.contrib import admin
 from django.http import HttpResponse
+from django.shortcuts import render
 from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 from . models import *
 from import_export.admin import ImportExportModelAdmin
 from django.apps import apps
+from django.db.models import ForeignKey
 
 # Departamentos
+
+def busqueda_empleado(modeladmin, request, queryset):
+   results = []
+   for obj in queryset:
+       for model in apps.get_models():
+           for field in model._meta.get_fields():
+               if isinstance(field, ForeignKey) and field.related_model == Empleado:
+                  related_objects = model.objects.filter(**{f'{field.name}': obj})
+                  for related_obj in related_objects:
+                      results.append(related_obj)
+   print(results)
+
+   # Crear PDF
+   response = HttpResponse(content_type='application/pdf')
+   response['Content-Disposition'] = 'attachment; filename="reporte.pdf"'
+   c = canvas.Canvas(response)
+
+   # Generacion de texto segun campos
+   for item in results:
+       y_position = 750
+       for field_name in item._meta.get_fields():
+           field_value = getattr(item, field_name.name)
+           c.drawString(100, y_position, f"{field_name.name.capitalize()}: {field_value}")
+           y_position -= 20
+
+       c.showPage()
+
+   c.save()
+   return response
+
+busqueda_empleado.short_description = "Buscar por Empleado"
 
 class DepartamentoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     
@@ -21,14 +55,16 @@ admin.site.register(Departamento, DepartamentoAdmin)
 
 class EmpleadoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     
-    # Campos buscables en admin
-    search_fields = ('nombre', 'cedula')
-    
-    # Campos visibles en admin
-    list_display = ('nombre', 'departamento', 'cargo', 'cedula')
-    
-    # Campos filtrables en admin
-    list_filter = ('departamento', 'cargo')
+   actions = [busqueda_empleado]    
+
+   # Campos buscables en admin
+   search_fields = ('nombre', 'cedula')
+
+   # Campos visibles en admin
+   list_display = ('nombre', 'departamento', 'cargo', 'cedula')
+
+   # Campos filtrables en admin
+   list_filter = ('departamento', 'cargo')
 
 admin.site.register(Empleado, EmpleadoAdmin)
 def equipo_no_operativo(modeladmin, request, queryset):
@@ -138,7 +174,7 @@ def generar_pdf(modeladmin, request, queryset):
    fields = [field.name for field in model._meta.fields]
 
    for item in queryset:
-        # Draw each field dynamically
+        # Dibuja el encabezado
         y_position = 750
         for field_name in fields:
             field_value = getattr(item, field_name)
@@ -226,6 +262,21 @@ class RouterAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_filter = ('marca',)
 
 admin.site.register(Router, RouterAdmin)
+
+
+class PerifericosAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    
+    actions = [equipo_no_operativo, equipo_en_solvencia, generar_pdf]
+
+    # Campos visibles en admin
+    list_display = ('bien_nacional', 'usuario', 'marca', 'modelo')
+    
+    # Campos buscables en admin
+    
+    search_fields = ('bien_nacional', 'marca', 'modelo')
+    # Campos filtrables en admin
+    
+admin.site.register(Periferico, PerifericosAdmin)
 
 class DesincorporacionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
