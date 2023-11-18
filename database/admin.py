@@ -185,6 +185,10 @@ admin.site.register(Router, RouterAdmin)
 
 class DesincorporacionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
+    # No se permite la creacion de objetos
+    def has_add_permission(self, request):
+       return False
+
     actions = [generar_pdf]
 
     # Campos visibles en admin
@@ -198,6 +202,10 @@ class DesincorporacionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 admin.site.register(Desincorporacion, DesincorporacionAdmin)
 
 class SolvenciaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+     
+    # No se permite la creacion de objetos
+    def has_add_permission(self, request):
+       return False
 
     actions = [generar_pdf]
 

@@ -162,6 +162,10 @@ class Router(models.Model):
 
 class Desincorporacion(models.Model):
     
+    # No se permite la creacion de objetos
+    def has_add_permission(self, request):
+       return False
+    
     id = models.AutoField(primary_key=True)
     
     # Datos de usuario
