@@ -60,7 +60,7 @@ class RouterViewSet(viewsets.ModelViewSet):
         return queryset
 
 class DesincorporacionViewSet(viewsets.ModelViewSet):
-    queryset = Desincorporacion.objects.all()
+    queryset = NoFuncional.objects.all()
     serializer_class = DesincorporacionSerializer
     
     def get_queryset(self):

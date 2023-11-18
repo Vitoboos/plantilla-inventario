@@ -37,7 +37,7 @@ def equipo_no_operativo(modeladmin, request, queryset):
         
         if (hasattr(obj, 'usuario')):
             
-            source_obj = Desincorporacion.objects.create(
+            source_obj = NoFuncional.objects.create(
             bien_nacional=obj.bien_nacional,
             usuario=obj.usuario,
             marca=obj.marca,
@@ -45,7 +45,7 @@ def equipo_no_operativo(modeladmin, request, queryset):
             )
         else:   
             
-            source_obj = Desincorporacion.objects.create(
+            source_obj = NoFuncional.objects.create(
             bien_nacional=obj.bien_nacional,
             usuario= None,
             marca=obj.marca,
@@ -243,7 +243,7 @@ class DesincorporacionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     search_fields = ('bien_nacional', 'marca', 'modelo')
     # Campos filtrables en admin
     
-admin.site.register(Desincorporacion, DesincorporacionAdmin)
+admin.site.register(NoFuncional, DesincorporacionAdmin)
 
 class SolvenciaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
      

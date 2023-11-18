@@ -68,7 +68,7 @@ class Equipo(models.Model):
 class Telefono(models.Model):   
     
     id = models.AutoField(primary_key=True)
-
+    
     # Datos corporativos
     
     usuario = models.ForeignKey(Empleado, on_delete=models.CASCADE, null=True, blank=True)
@@ -122,6 +122,7 @@ class Impresora(models.Model):
 class Switch(models.Model):
     
     id = models.AutoField(primary_key=True)
+    departamento = models.ForeignKey(Departamento, on_delete=models.CASCADE, null=True, blank=True)
 
     # Datos corporativos
     
@@ -143,6 +144,7 @@ class Switch(models.Model):
 class Router(models.Model):
     
     id = models.AutoField(primary_key=True)
+    departamento = models.ForeignKey(Departamento, on_delete=models.CASCADE, null=True, blank=True)
 
     # Datos corporativos
     
@@ -164,7 +166,7 @@ class Router(models.Model):
     
 # Arreglo de modelos
 
-class Desincorporacion(models.Model):
+class NoFuncional(models.Model):
     
     id = models.AutoField(primary_key=True)
     

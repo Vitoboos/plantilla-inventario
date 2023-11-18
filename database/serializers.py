@@ -63,7 +63,7 @@ class RouterSerializer(serializers.ModelSerializer):
 class DesincorporacionSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Desincorporacion
+        model = NoFuncional
         fields = '__all__'
 
 class SolvenciaSerializer(serializers.ModelSerializer):
