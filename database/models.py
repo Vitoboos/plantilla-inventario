@@ -99,7 +99,7 @@ class Impresora(models.Model):
 
     # Datos corporativos
     
-    departamento = models.ForeignKey(Departamento, on_delete=models.CASCADE)
+    departamento = models.ForeignKey(Departamento, on_delete=models.CASCADE, null=True, blank=True)
     bien_nacional = models.CharField(max_length=6, default="000000")
 
     # Datos de fabrica
@@ -112,8 +112,12 @@ class Impresora(models.Model):
     ipv4 = models.CharField(max_length=50, default='No asignado')
     mac = models.CharField(max_length=50, default='No asignado')
     def __str__(self):
-        return self.ipv4 + ' ' + self.departamento.nombre
-    
+        
+        if self.departamento is None:
+            return self.ipv4
+        
+        else:
+            return self.ipv4 + ' ' + self.departamento.nombre
     
 class Switch(models.Model):
     
@@ -162,10 +166,6 @@ class Router(models.Model):
 
 class Desincorporacion(models.Model):
     
-    # No se permite la creacion de objetos
-    def has_add_permission(self, request):
-       return False
-    
     id = models.AutoField(primary_key=True)
     
     # Datos de usuario
@@ -188,12 +188,14 @@ class Desincorporacion(models.Model):
 class Solvencia(models.Model):
     
     id = models.AutoField(primary_key=True)
+    tipo = models.CharField(max_length=50, default='No asignado')
     
     # Datos de usuario
     bien_nacional = models.CharField(max_length=6, default="000000")
     
     # Datos corporativos
     usuario = models.ForeignKey(Empleado, on_delete=models.CASCADE, null=True, blank=True)
+    departamento = models.ForeignKey(Departamento, on_delete=models.CASCADE, null=True, blank=True)
     descripcion = models.CharField(max_length=100, default='No asignado')
     
     # Datos de fabrica

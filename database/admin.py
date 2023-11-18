@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from . models import *
 from import_export.admin import ImportExportModelAdmin
+from django.apps import apps
 
 # Departamentos
 
@@ -63,15 +64,27 @@ def equipo_en_solvencia(modeladmin, request, queryset):
         if (hasattr(obj, 'usuario')):
             
             source_obj = Solvencia.objects.create(
+            tipo = obj.__class__.__name__,
             bien_nacional=obj.bien_nacional,
             marca=obj.marca,
+            usuario= None,
             modelo=obj.modelo
             )
+            
+        elif(hasattr(obj, 'departamento')):
+            source_obj = Solvencia.objects.create(
+            tipo = obj.__class__.__name__,
+            bien_nacional=obj.bien_nacional,
+            marca=obj.marca,
+            departamento=obj.departamento,
+            modelo=obj.modelo
+            )
+            
         else:   
             
             source_obj = Solvencia.objects.create(
+            tipo = obj.__class__.__name__,
             bien_nacional=obj.bien_nacional,
-            usuario= None,
             marca=obj.marca,
             modelo=obj.modelo
             )
@@ -80,6 +93,37 @@ def equipo_en_solvencia(modeladmin, request, queryset):
 
 equipo_en_solvencia.short_description = "Marcar como activo en solvencia"
 
+
+def reasignar_equipo(modeladmin, request, queryset):
+   for obj in queryset:
+       target = obj.tipo
+       target_model = apps.get_model('database', target)
+
+       if (hasattr(obj, 'usuario')):
+           source_obj = target_model.objects.create(
+               bien_nacional=obj.bien_nacional,
+               marca=obj.marca,
+               modelo=obj.modelo
+           )
+           
+       elif(hasattr(obj, 'departamento')):
+           source_obj = target_model.objects.create(
+               bien_nacional=obj.bien_nacional,
+               departamento=obj.departamento,
+               marca=obj.marca,
+               modelo=obj.modelo
+           )
+       else:  
+           source_obj = Solvencia.objects.create(
+               bien_nacional=obj.bien_nacional,
+               usuario= None,
+               marca=obj.marca,
+               modelo=obj.modelo
+           )
+           
+       obj.delete()
+
+reasignar_equipo.short_description = "Reasignar equipo"
 
 def generar_pdf(modeladmin, request, queryset):
    response = HttpResponse(content_type='application/pdf')
@@ -207,10 +251,10 @@ class SolvenciaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     def has_add_permission(self, request):
        return False
 
-    actions = [generar_pdf]
+    actions = [generar_pdf, reasignar_equipo]
 
     # Campos visibles en admin
-    list_display = ('bien_nacional', 'usuario', 'marca', 'modelo')
+    list_display = ('bien_nacional', 'tipo', 'usuario', 'marca', 'modelo')
     
     # Campos buscables en admin
     
