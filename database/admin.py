@@ -178,7 +178,7 @@ class ImpresoraAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('marca', 'bien_nacional', 'modelo', 'ipv4', 'mac')
     
     # Campos filtrables en admin
-    list_filter = ('marca',)
+    list_filter = ('marca', 'departamento__nombre')
 
 admin.site.register(Impresora, ImpresoraAdmin)
 
@@ -240,7 +240,7 @@ class DesincorporacionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     
     # Campos buscables en admin
     
-    search_fields = ('bien_nacional',)
+    search_fields = ('bien_nacional', 'marca', 'modelo')
     # Campos filtrables en admin
     
 admin.site.register(Desincorporacion, DesincorporacionAdmin)
@@ -258,7 +258,7 @@ class SolvenciaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     
     # Campos buscables en admin
     
-    search_fields = ('bien_nacional', 'modelo')
+    search_fields = ('bien_nacional', 'marca', 'modelo')
     # Campos filtrables en admin
     
     
